@@ -45,7 +45,7 @@ class Customer
     private ?string $company = null;
 
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Invoice::class)]
-    #[Groups(["customer:read", "invoice:read"])]
+    #[Groups(["customer:read"])]
     private Collection $invoices;
 
     #[ORM\ManyToOne(inversedBy: 'customers')]
