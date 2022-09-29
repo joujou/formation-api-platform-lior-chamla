@@ -1,0 +1,19 @@
+api_platform:
+  # The title of the API.
+  title: 'API Platform formation'
+
+  # The description of the API.
+  description: 'API description'
+
+  # The version of the API.
+  version: '0.0.0'
+
+  # Set this to false if you want Webby to disappear.
+  show_webby: false
+
+  defaults:
+    pagination_enabled: false
+    pagination_items_per_page: 10
+    pagination_client_enabled: true
+    pagination_client_items_per_page: true
+    pagination_items_per_page_parameter_name: 'count'
