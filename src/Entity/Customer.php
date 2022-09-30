@@ -5,7 +5,14 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\CustomerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,9 +20,22 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
+    operations: [
+        new Get(
+        ),
+        new Post(),
+        new Put(),
+        new Delete(),
+        new GetCollection()
+    ],
     normalizationContext: [
         'groups' => ['customer:read']
     ]
+)]
+#[ApiResource(
+    uriTemplate: '/customers/{id}/invoices',
+    operations: [new Get()],
+    normalizationContext: ['groups' => []],
 )]
 #[ApiFilter(SearchFilter::class,null,null,["firstName" => "partial", "lastName" => "partial", "company" => "partial"])]
 #[ApiFilter(OrderFilter::class)]
@@ -49,12 +69,35 @@ class Customer
     private Collection $invoices;
 
     #[ORM\ManyToOne(inversedBy: 'customers')]
-    #[Groups(["customer:read", "invoice:read"])]
+    #[Groups(["customer:read"])]
     private ?User $user = null;
 
     public function __construct()
     {
         $this->invoices = new ArrayCollection();
+    }
+
+    /**
+     * Total des invoices (champ calculé)
+     * @return float
+     */
+    #[Groups(["customer:read"])]
+    public function getTotalAmount(): float
+    {
+        return array_reduce($this->invoices->toArray(), function ($total, $invoice) {
+            return $total + $invoice->getAmount();
+        }, 0);
+    }
+
+    /**
+     * Total impayé
+     * @return float
+     */
+    #[Groups(["customer:read"])]
+    public function getUnpaidAmount(): float {
+        return array_reduce($this->invoices->toArray(), function ($total, $invoice) {
+            return $total + ($invoice->getStatus() === "PAID" || $invoice->getStatus() == "CANCELLED" ? 0 : $invoice->getAmount());
+        }, 0);
     }
 
     public function getId(): ?int
