@@ -10,19 +10,27 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\InvoiceIncrementationController;
 use App\Repository\InvoiceRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
-
     operations: [
-        new Get(
-        ),
+        new Get(),
         new Post(),
         new Put(),
         new Delete(),
-        new GetCollection()
+        new GetCollection(),
+        new Post(
+            uriTemplate: '/invoices/{id}/increment',
+            controller: InvoiceIncrementationController::class,
+            openapiContext: [
+                'summary' => 'Incrémentation chrono invoice',
+            ],
+            name: 'Invoice Increment'
+
+        ),
     ],
     normalizationContext: [
     'groups' => ['invoice:read']

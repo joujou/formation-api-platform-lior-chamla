@@ -35,7 +35,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     uriTemplate: '/customers/{id}/invoices',
     operations: [new Get()],
-    normalizationContext: ['groups' => []],
+    normalizationContext: ['groups' => ['customer:read']],
 )]
 #[ApiFilter(SearchFilter::class,null,null,["firstName" => "partial", "lastName" => "partial", "company" => "partial"])]
 #[ApiFilter(OrderFilter::class)]
