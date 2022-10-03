@@ -12,9 +12,11 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
@@ -26,6 +28,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new GetCollection()
     ],
 )]
+#[UniqueEntity(fields: ['email'], message: 'Email doit être unique dans la base')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -37,6 +40,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     #[Groups(["customer:read", "invoice:read"])]
+    #[Assert\NotBlank(message: "Valeur obligatoire")]
+    #[Assert\Email(message: "Le format de l'adresse email doit être valide")]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -46,14 +51,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Password obligatoire")]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["customer:read", "invoice:read"])]
+    #[Assert\NotBlank(message: "Firstname obligatoire")]
+    #[Assert\Length(min:3, max: 150, minMessage: 'Trop court', maxMessage: 'Trop grand')]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["customer:read", "invoice:read"])]
+    #[Assert\NotBlank(message: "Lastname obligatoire")]
+    #[Assert\Length(min:3, max: 150, minMessage: 'Trop court', maxMessage: 'Trop grand')]
     private ?string $lastName = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Customer::class)]

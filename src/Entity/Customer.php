@@ -5,12 +5,11 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\CustomerRepository;
@@ -50,14 +49,20 @@ class Customer
 
     #[ORM\Column(length: 255)]
     #[Groups(["customer:read", "invoice:read"])]
+    #[Assert\NotBlank(message: "Valeur obligatoire")]
+    #[Assert\Length(min:3, max: 150, minMessage: 'Trop court', maxMessage: 'Trop grand')]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["customer:read", "invoice:read"])]
+    #[Assert\NotBlank(message: "Valeur obligatoire")]
+    #[Assert\Length(min:3, max: 150, minMessage: 'Trop court', maxMessage: 'Trop grand')]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["customer:read", "invoice:read"])]
+    #[Assert\NotBlank(message: "Valeur obligatoire")]
+    #[Assert\Email(message: "Le format de l'adresse email doit être valide")]
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -70,6 +75,7 @@ class Customer
 
     #[ORM\ManyToOne(inversedBy: 'customers')]
     #[Groups(["customer:read"])]
+    #[Assert\NotBlank(message: "User obligatoire")]
     private ?User $user = null;
 
     public function __construct()

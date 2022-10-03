@@ -14,6 +14,7 @@ use App\Controller\InvoiceIncrementationController;
 use App\Repository\InvoiceRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
@@ -33,8 +34,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
     ],
     normalizationContext: [
-    'groups' => ['invoice:read']
-],
+        'groups' => ['invoice:read']
+    ],
+    denormalizationContext: ['disable_type_enforcement' => true],
     order: ['sentAt' => 'desc'],
     paginationEnabled: true,
     paginationItemsPerPage: 20
@@ -54,23 +56,32 @@ class Invoice
 
     #[ORM\Column]
     #[Groups(["invoice:read", "customer:read"])]
-    private ?float $amount = null;
+    #[Assert\NotBlank(message: "Valeur obligatoire")]
+    #[Assert\Type(type: "numeric", message: "Valeur numérique attendue")]
+    private $amount = null;
 
     #[ORM\Column]
     #[Groups(["invoice:read", "customer:read"])]
-    private ?\DateTime $sentAt = null;
+    #[Assert\DateTime(message: "La date doit être au bon format")]
+    #[Assert\NotBlank(message: "Date envoi obligatoire")]
+    private $sentAt = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["invoice:read", "customer:read"])]
+    #[Assert\NotBlank(message: "Statut obligatoire")]
+    #[Assert\Choice(choices: ["SENT", "PAID", "CANCELLED"])]
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'invoices')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(["invoice:read"])]
+    #[Assert\NotBlank(message: "Customer obligatoire")]
     private ?Customer $customer = null;
 
     #[ORM\Column]
     #[Groups(["invoice:read", "customer:read"])]
+    #[Assert\NotBlank(message: "Chrono obligatoire")]
+    #[Assert\Type(type: "numeric", message: "Valeur numérique attendue pour le chrono")]
     private ?int $chrono = null;
 
     /**
@@ -92,7 +103,7 @@ class Invoice
         return $this->amount;
     }
 
-    public function setAmount(float $amount): self
+    public function setAmount($amount): self
     {
         $this->amount = $amount;
 
@@ -104,7 +115,7 @@ class Invoice
         return $this->sentAt;
     }
 
-    public function setSentAt(\DateTime $sentAt): self
+    public function setSentAt($sentAt): self
     {
         $this->sentAt = $sentAt;
 
