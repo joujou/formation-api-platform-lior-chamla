@@ -110,7 +110,7 @@ class Invoice
         return $this;
     }
 
-    public function getSentAt(): ?\DateTime
+    public function getSentAt()
     {
         return $this->sentAt;
     }

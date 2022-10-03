@@ -27,6 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Delete(),
         new GetCollection()
     ],
+    normalizationContext: ['groups' => ['user:read']],
 )]
 #[UniqueEntity(fields: ['email'], message: 'Email doit être unique dans la base')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -35,11 +36,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["customer:read", "invoice:read"])]
+    #[Groups(["customer:read", "invoice:read", "user:read"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(["customer:read", "invoice:read"])]
+    #[Groups(["customer:read", "invoice:read", "user:read"])]
     #[Assert\NotBlank(message: "Valeur obligatoire")]
     #[Assert\Email(message: "Le format de l'adresse email doit être valide")]
     private ?string $email = null;
@@ -55,13 +56,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["customer:read", "invoice:read"])]
+    #[Groups(["customer:read", "invoice:read", "user:read"])]
     #[Assert\NotBlank(message: "Firstname obligatoire")]
     #[Assert\Length(min:3, max: 150, minMessage: 'Trop court', maxMessage: 'Trop grand')]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["customer:read", "invoice:read"])]
+    #[Groups(["customer:read", "invoice:read", "user:read"])]
     #[Assert\NotBlank(message: "Lastname obligatoire")]
     #[Assert\Length(min:3, max: 150, minMessage: 'Trop court', maxMessage: 'Trop grand')]
     private ?string $lastName = null;
