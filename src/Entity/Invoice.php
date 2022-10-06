@@ -64,7 +64,7 @@ class Invoice
     #[Groups(["invoice:read", "customer:read"])]
     #[Assert\DateTime(message: "La date doit être au bon format")]
     #[Assert\NotBlank(message: "Date envoi obligatoire")]
-    private $sentAt = null;
+    private \DateTime|null $sentAt = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["invoice:read", "customer:read"])]
