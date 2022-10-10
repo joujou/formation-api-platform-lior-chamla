@@ -4,6 +4,7 @@ import Pagination from '../components/Pagination'
 const CustomersPage = () => {
   const [customers, setCustomers] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
+  const [search, setSearch] = useState('')
   useEffect(() => {
     axios
       .get('http://localhost:8000/api/customers')
@@ -32,19 +33,42 @@ const CustomersPage = () => {
 
   const itemsPerPage = 10
 
+  const filteredCustomers = customers.filter(
+    (customer) =>
+      customer.firstName.toLowerCase().includes(search.toLowerCase()) ||
+      customer.lastName.toLowerCase().includes(search.toLowerCase()) ||
+      customer.email.toLowerCase().includes(search.toLowerCase()) ||
+      (customer.company &&
+        customer.company.toLowerCase().includes(search.toLowerCase()))
+  )
+
   const handlePageChange = (page) => {
     setCurrentPage(page)
   }
 
   const paginatedCustomers = Pagination.getData(
-    customers,
+    filteredCustomers,
     currentPage,
     itemsPerPage
   )
 
+  const handleSearch = (event) => {
+    const value = event.currentTarget.value
+    setSearch(value)
+    setCurrentPage(1)
+  }
+
   return (
     <>
       <h1>Clients</h1>
+      <div className="form-group">
+        <input
+          className="form-control"
+          onChange={handleSearch}
+          placeholder="Rechecher"
+          value={search}
+        />
+      </div>
       <table className="table table-hover">
         <thead>
           <tr>
@@ -80,13 +104,14 @@ const CustomersPage = () => {
           ))}
         </tbody>
       </table>
-
-      <Pagination
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-        length={customers.length}
-        onPageChanged={handlePageChange}
-      />
+      {itemsPerPage < filteredCustomers.length && (
+        <Pagination
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          length={filteredCustomers.length}
+          onPageChanged={handlePageChange}
+        />
+      )}
     </>
   )
 }
