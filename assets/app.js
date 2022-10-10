@@ -13,6 +13,7 @@ import Navbar from './js/components/Navbar'
 import HomePage from './js/pages/HomePage'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import CustomersPage from './js/pages/CustomersPage'
+import CustomersPageWithPagination from './js/pages/CustomersPageWithPagination'
 
 const App = () => {
   return (

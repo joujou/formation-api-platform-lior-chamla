@@ -36,8 +36,11 @@ const CustomersPage = () => {
     setCurrentPage(page)
   }
 
-  const start = currentPage * itemsPerPage - itemsPerPage
-  const paginatedCustomers = customers.slice(start, start + itemsPerPage)
+  const paginatedCustomers = Pagination.getData(
+    customers,
+    currentPage,
+    itemsPerPage
+  )
 
   return (
     <>
