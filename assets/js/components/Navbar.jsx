@@ -2,9 +2,10 @@ import React from 'react'
 import { logout } from '../services/AuthAPI'
 import { NavLink } from 'react-router-dom'
 
-const Navbar = () => {
+const Navbar = ({ isAuthenticated, onLogout }) => {
   const handleLogout = () => {
     logout()
+    onLogout(false)
   }
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -42,26 +43,32 @@ const Navbar = () => {
               </NavLink>
             </li>
           </ul>
+
           <ul className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <a href="#" className="nav-link">
-                Inscription
-              </a>
-            </li>
-            <li className="nav-item">
-              <NavLink to="/login" className="btn btn-success">
-                Connexion
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <button
-                onClick={handleLogout}
-                href="#"
-                className="btn btn-danger"
-              >
-                Déconnexion
-              </button>
-            </li>
+            {(!isAuthenticated && (
+              <>
+                <li className="nav-item">
+                  <a href="#" className="nav-link">
+                    Inscription
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <NavLink to="/login" className="btn btn-success">
+                    Connexion
+                  </NavLink>
+                </li>
+              </>
+            )) || (
+              <li className="nav-item">
+                <button
+                  onClick={handleLogout}
+                  href="#"
+                  className="btn btn-danger"
+                >
+                  Déconnexion
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>
