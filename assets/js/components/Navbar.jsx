@@ -1,5 +1,6 @@
 import React from 'react'
 import { logout } from '../services/AuthAPI'
+import { NavLink } from 'react-router-dom'
 
 const Navbar = () => {
   const handleLogout = () => {
@@ -25,47 +26,20 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarColor01">
           <ul className="navbar-nav me-auto">
             <li className="nav-item">
-              <a className="nav-link active" href="#">
+              <NavLink className="nav-link active" to="/">
                 SymReact
                 <span className="visually-hidden">(current)</span>
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/#/customers">
+              <NavLink className="nav-link" to="/customers">
                 Clients
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/#/invoices">
+              <NavLink className="nav-link" to="/invoices">
                 Factures
-              </a>
-            </li>
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-                href="#"
-                role="button"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                Dropdown
-              </a>
-              <div className="dropdown-menu">
-                <a className="dropdown-item" href="#">
-                  Action
-                </a>
-                <a className="dropdown-item" href="#">
-                  Another action
-                </a>
-                <a className="dropdown-item" href="#">
-                  Something else here
-                </a>
-                <div className="dropdown-divider"></div>
-                <a className="dropdown-item" href="#">
-                  Separated link
-                </a>
-              </div>
+              </NavLink>
             </li>
           </ul>
           <ul className="navbar-nav ml-auto">
@@ -75,9 +49,9 @@ const Navbar = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a href="/#/login" className="btn btn-success">
+              <NavLink to="/login" className="btn btn-success">
                 Connexion
-              </a>
+              </NavLink>
             </li>
             <li className="nav-item">
               <button
