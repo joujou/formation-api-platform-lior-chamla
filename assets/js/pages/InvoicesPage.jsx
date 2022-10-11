@@ -1,55 +1,48 @@
 import React, { useEffect, useState } from 'react'
 import Pagination from '../components/Pagination'
-import { findAll, deleteCustomer } from '../services/customersAPI'
+import { findAll, deleteInvoice } from '../services/InvoicesAPI'
 
-const CustomersPage = () => {
-  const [customers, setCustomers] = useState([])
+const InvoicesPage = () => {
+  const [invoices, setInvoices] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [search, setSearch] = useState('')
-  const fetchCustomer = async () => {
+  const fetchInvoice = async () => {
     try {
       const data = await findAll()
-      setCustomers(data)
+      setInvoices(data)
     } catch (error) {
       console.log(error.response)
     }
   }
   useEffect(() => {
-    fetchCustomer()
+    fetchInvoice()
   }, [])
 
   const handleDelete = async (id) => {
-    // Copie des customers pour faire un mix optimiste/pessimiste
-    const originalCustomers = [...customers]
+    // Copie des invoices pour faire un mix optimiste/pessimiste
+    const originalInvoices = [...invoices]
 
     // Optimiste
-    setCustomers(customers.filter((customer) => customer.id !== id))
+    setInvoices(invoices.filter((record) => record.id !== id))
 
     // Pessimiste = supprimer uniquement quand reponse requete delete
     try {
       await deleteCustomer(id)
     } catch (error) {
-      setCustomers(originalCustomers)
+      setInvoices(originalInvoices)
     }
   }
 
   const itemsPerPage = 10
 
-  const filteredCustomers = customers.filter(
-    (customer) =>
-      customer.firstName.toLowerCase().includes(search.toLowerCase()) ||
-      customer.lastName.toLowerCase().includes(search.toLowerCase()) ||
-      customer.email.toLowerCase().includes(search.toLowerCase()) ||
-      (customer.company &&
-        customer.company.toLowerCase().includes(search.toLowerCase()))
-  )
+  const filteredInvoices = invoices.filter((record) => true)
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
   }
 
-  const paginatedCustomers = Pagination.getData(
-    filteredCustomers,
+  const paginatedInvoices = Pagination.getData(
+    filteredInvoices,
     currentPage,
     itemsPerPage
   )
@@ -61,7 +54,7 @@ const CustomersPage = () => {
 
   return (
     <>
-      <h1>Clients</h1>
+      <h1>Factures</h1>
       <div className="form-group">
         <input
           className="form-control"
@@ -73,29 +66,29 @@ const CustomersPage = () => {
       <table className="table table-hover">
         <thead>
           <tr>
-            <th>Id.</th>
+            <th>N°</th>
             <th>Client</th>
-            <th>Email</th>
-            <th>Entreprise</th>
-            <th>Factures</th>
+            <th>Date envoi</th>
+            <th>Status</th>
+            <th>Montant</th>
             <th>Montant total</th>
           </tr>
         </thead>
         <tbody>
-          {paginatedCustomers.map((customer) => (
-            <tr key={customer.id}>
-              <td>{customer.id}</td>
+          {paginatedInvoices.map((record) => (
+            <tr key={record.id}>
+              <td>{record.chrono}</td>
               <td>
-                {customer.firstName} {customer.lastName}
+                {record.customer.firstName} {record.customer.lastName}
               </td>
-              <td>{customer.email}</td>
-              <td>{customer.company}</td>
-              <td>{customer.invoices.length}</td>
-              <td>{customer.totalAmount.toLocaleString()} €</td>
+              <td>{record.sentAt}</td>
+              <td>
+                <span className="badge bg-success">{record.status}</span>
+              </td>
+              <td>{record.amount.toLocaleString()}</td>
               <td>
                 <button
-                  onClick={() => handleDelete(customer.id)}
-                  disabled={customer.invoices.length > 0}
+                  onClick={() => handleDelete(record.id)}
                   className="btn btn-sm btn-danger"
                 >
                   Supprimer
@@ -105,15 +98,15 @@ const CustomersPage = () => {
           ))}
         </tbody>
       </table>
-      {itemsPerPage < filteredCustomers.length && (
+      {itemsPerPage < filteredInvoices.length && (
         <Pagination
           currentPage={currentPage}
           itemsPerPage={itemsPerPage}
-          length={filteredCustomers.length}
+          length={filteredInvoices.length}
           onPageChanged={handlePageChange}
         />
       )}
     </>
   )
 }
-export default CustomersPage
+export default InvoicesPage
