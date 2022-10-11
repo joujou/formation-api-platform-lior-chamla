@@ -15,6 +15,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom'
 import CustomersPage from './js/pages/CustomersPage'
 import InvoicesPage from './js/pages/InvoicesPage'
 import CustomersPageWithPagination from './js/pages/CustomersPageWithPagination'
+import LoginPage from './js/pages/LoginPage'
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/customers" element={<CustomersPage />} />
             <Route path="/invoices" element={<InvoicesPage />} />
+            <Route path="/login" element={<LoginPage />} />
           </Routes>
         </main>
       </HashRouter>

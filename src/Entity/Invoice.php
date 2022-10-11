@@ -38,7 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     denormalizationContext: ['disable_type_enforcement' => true],
     order: ['sentAt' => 'desc'],
-    paginationEnabled: true,
+    paginationEnabled: false,
     paginationItemsPerPage: 20
 
 )]
@@ -89,7 +89,8 @@ class Invoice
      * @return User
      */
     #[Groups(["invoice:read"])]
-    public function getUser(): User {
+    public function getUser(): User
+    {
         return $this->getCustomer()->getUser();
     }
 

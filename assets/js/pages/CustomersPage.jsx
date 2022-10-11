@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Pagination from '../components/Pagination'
-import { findAll, deleteCustomer } from '../services/customersAPI'
+import { findAll, deleteCustomer } from '../services/CustomersAPI'
 
 const CustomersPage = () => {
   const [customers, setCustomers] = useState([])

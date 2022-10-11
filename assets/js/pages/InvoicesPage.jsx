@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import Pagination from '../components/Pagination'
 import { findAll, deleteInvoice } from '../services/InvoicesAPI'
+import moment from 'moment'
+
+const STATUS_CLASSES = {
+  PAID: 'success',
+  SENT: 'info',
+  CANCEL: 'danger',
+}
+
+const STATUS_LABELS = {
+  PAID: 'Payée',
+  SENT: 'Envoyée',
+  CANCEL: 'Annulée',
+}
 
 const InvoicesPage = () => {
   const [invoices, setInvoices] = useState([])
@@ -18,6 +31,8 @@ const InvoicesPage = () => {
     fetchInvoice()
   }, [])
 
+  const formatDate = (str) => moment(str).format('DD/MM/YYYY')
+
   const handleDelete = async (id) => {
     // Copie des invoices pour faire un mix optimiste/pessimiste
     const originalInvoices = [...invoices]
@@ -27,15 +42,21 @@ const InvoicesPage = () => {
 
     // Pessimiste = supprimer uniquement quand reponse requete delete
     try {
-      await deleteCustomer(id)
+      await deleteInvoice(id)
     } catch (error) {
       setInvoices(originalInvoices)
     }
   }
 
-  const itemsPerPage = 10
+  const itemsPerPage = 20
 
-  const filteredInvoices = invoices.filter((record) => true)
+  const filteredInvoices = invoices.filter(
+    (record) =>
+      record.customer.lastName.toLowerCase().includes(search.toLowerCase()) ||
+      record.customer.firstName.toLowerCase().includes(search.toLowerCase()) ||
+      record.amount.toString().startsWith(search.toLowerCase()) ||
+      STATUS_LABELS[record.status].toLowerCase().includes(search.toLowerCase())
+  )
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
@@ -81,9 +102,11 @@ const InvoicesPage = () => {
               <td>
                 {record.customer.firstName} {record.customer.lastName}
               </td>
-              <td>{record.sentAt}</td>
+              <td>{formatDate(record.sentAt)}</td>
               <td>
-                <span className="badge bg-success">{record.status}</span>
+                <span className={`badge bg-${STATUS_CLASSES[record.status]}`}>
+                  {STATUS_LABELS[record.status]}
+                </span>
               </td>
               <td>{record.amount.toLocaleString()}</td>
               <td>
