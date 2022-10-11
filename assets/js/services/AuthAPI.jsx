@@ -18,7 +18,6 @@ export function logout() {
 }
 
 function setAxiosToken(token) {
-  console.log('ICI')
   axios.defaults.headers['Authorization'] = 'Bearer ' + token
 }
 
@@ -35,7 +34,7 @@ export function setup() {
   }
 }
 
-export function isAuthenticated() {
+export function getIsAuthenticated() {
   const token = window.localStorage.getItem('authToken')
   if (token) {
     const { exp: expiration } = jwtDecode(token)

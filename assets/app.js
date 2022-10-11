@@ -16,31 +16,49 @@ import CustomersPage from './js/pages/CustomersPage'
 import InvoicesPage from './js/pages/InvoicesPage'
 import CustomersPageWithPagination from './js/pages/CustomersPageWithPagination'
 import LoginPage from './js/pages/LoginPage'
-import { setup } from './js/services/AuthAPI'
+import { setup, getIsAuthenticated } from './js/services/AuthAPI'
+import RequireAuth from './js/services/RequireAuth'
+import { AuthContext } from './js/contexts/AuthContext'
 
 setup()
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(isAuthenticated)
+  const [isAuthenticated, setIsAuthenticated] = useState(getIsAuthenticated)
+
   return (
     <>
-      <HashRouter>
-        <Navbar
-          isAuthenticated={isAuthenticated}
-          onLogout={setIsAuthenticated}
-        />
-        <main className="container pt-5">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/customers" element={<CustomersPage />} />
-            <Route path="/invoices" element={<InvoicesPage />} />
-            <Route
-              path="/login"
-              element={<LoginPage onLogin={setIsAuthenticated} />}
-            />
-          </Routes>
-        </main>
-      </HashRouter>
+      <AuthContext.Provider
+        value={{
+          isAuthenticated: isAuthenticated,
+          setIsAuthenticated: setIsAuthenticated,
+        }}
+      >
+        <HashRouter>
+          <Navbar />
+          <main className="container pt-5">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route
+                path="/customers"
+                element={
+                  <RequireAuth>
+                    <CustomersPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/invoices"
+                element={
+                  <RequireAuth>
+                    <InvoicesPage />
+                  </RequireAuth>
+                }
+              />
+              <Route path="/login" element={<LoginPage />} />
+            </Routes>
+          </main>
+        </HashRouter>
+      </AuthContext.Provider>
     </>
   )
 }

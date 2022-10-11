@@ -1,7 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { authenticate } from '../services/AuthAPI'
+import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../contexts/AuthContext'
 
-const LoginPage = ({ onLogin }) => {
+const LoginPage = () => {
+  const { setIsAuthenticated } = useContext(AuthContext)
+  const navigate = useNavigate()
   const [credentials, setCredentials] = useState({
     username: '',
     password: '',
@@ -21,8 +25,9 @@ const LoginPage = ({ onLogin }) => {
     event.preventDefault()
     try {
       await authenticate(credentials)
-      onLogin(true)
+      setIsAuthenticated(true)
       setError('')
+      navigate('/customers')
     } catch (e) {
       console.log(e)
       setError('Echec connexion')

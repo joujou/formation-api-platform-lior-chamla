@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { logout } from '../services/AuthAPI'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../contexts/AuthContext'
 
-const Navbar = ({ isAuthenticated, onLogout }) => {
+const Navbar = () => {
+  const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext)
+  const navigate = useNavigate()
   const handleLogout = () => {
     logout()
-    onLogout(false)
+    setIsAuthenticated(false)
+    navigate('/login')
   }
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
