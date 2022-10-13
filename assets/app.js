@@ -19,6 +19,7 @@ import LoginPage from './js/pages/LoginPage'
 import { setup, getIsAuthenticated } from './js/services/AuthAPI'
 import RequireAuth from './js/services/RequireAuth'
 import { AuthContext } from './js/contexts/AuthContext'
+import CustomerPage from './js/pages/CustomerPage'
 
 setup()
 
@@ -43,6 +44,14 @@ const App = () => {
                 element={
                   <RequireAuth>
                     <CustomersPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/customer/:id"
+                element={
+                  <RequireAuth>
+                    <CustomerPage />
                   </RequireAuth>
                 }
               />

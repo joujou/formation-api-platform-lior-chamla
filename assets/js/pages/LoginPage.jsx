@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { authenticate } from '../services/AuthAPI'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext'
+import Field from '../components/Forms/Field'
 
 const LoginPage = () => {
   const { setIsAuthenticated } = useContext(AuthContext)
@@ -38,32 +39,23 @@ const LoginPage = () => {
     <>
       <h1>Connexion</h1>
       <form>
-        <div className="form-group">
-          <label htmlFor="username">Adresse email</label>
-          <input
-            type="email"
-            placeholder="Email de connexion"
-            className={'form-control' + (error && ' is-invalid')}
-            id="username"
-            value={credentials.username}
-            onChange={handleChange}
-            name="username"
-          />
-          {error && <p className="invalid-feedback">{error}</p>}
-        </div>
+        <Field
+          name="username"
+          label="Email"
+          value={credentials.username}
+          onChange={handleChange}
+          error={error}
+        ></Field>
 
-        <div className="form-group">
-          <label htmlFor="password">Mot de passe</label>
-          <input
-            type="password"
-            name="password"
-            className="form-control"
-            placeholder="Mot de passe"
-            id="password"
-            value={credentials.password}
-            onChange={handleChange}
-          />
-        </div>
+        <Field
+          name="password"
+          label="Mot de passe"
+          value={credentials.password}
+          onChange={handleChange}
+          type="password"
+          error=""
+        ></Field>
+
         <div className="form-group">
           <button
             type="submit"
