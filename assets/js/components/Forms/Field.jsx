@@ -17,7 +17,10 @@ const Field = ({
       <input
         type={type}
         placeholder={placeholder || label}
-        className={'form-control' + (error && ' is-invalid')}
+        className={
+          'form-control' +
+          (error !== '' && error !== undefined ? ' is-invalid' : '')
+        }
         id={name}
         value={value}
         onChange={onChange}

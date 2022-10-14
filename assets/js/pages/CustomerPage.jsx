@@ -64,7 +64,7 @@ const CustomerPage = () => {
         navigate('/customers')
       }
 
-      setErrors({})
+      //setErrors({})
     } catch ({ response }) {
       const { violations } = response.data
       if (violations) {
