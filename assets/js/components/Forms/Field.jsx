@@ -10,8 +10,8 @@ const Field = ({
   error,
 }) => {
   return (
-    <div className="form-group">
-      <label className="form-label" htmlFor={name}>
+    <div className="form-group row">
+      <label className="form-label-plaintext" htmlFor={name}>
         {label}
       </label>
       <input
@@ -23,7 +23,7 @@ const Field = ({
         onChange={onChange}
         name={name}
       />
-      {error && <p className="invalid-feedback">{error}</p>}
+      {error && <div className="invalid-feedback">{error}</div>}
     </div>
   )
 }

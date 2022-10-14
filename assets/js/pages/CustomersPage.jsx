@@ -64,7 +64,7 @@ const CustomersPage = () => {
     <>
       <div className="mb-3 d-flex justify-content-between align-items-center">
         <h1>Clients</h1>
-        <Link className="btn btn-primary" to="/customers/new">
+        <Link className="btn btn-primary" to="/customer/new">
           Créer un client
         </Link>
       </div>
