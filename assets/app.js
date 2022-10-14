@@ -20,6 +20,7 @@ import { setup, getIsAuthenticated } from './js/services/AuthAPI'
 import RequireAuth from './js/services/RequireAuth'
 import { AuthContext } from './js/contexts/AuthContext'
 import CustomerPage from './js/pages/CustomerPage'
+import InvoicePage from './js/pages/InvoicePage'
 
 setup()
 
@@ -60,6 +61,14 @@ const App = () => {
                 element={
                   <RequireAuth>
                     <InvoicesPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/invoice/:id"
+                element={
+                  <RequireAuth>
+                    <InvoicePage />
                   </RequireAuth>
                 }
               />
