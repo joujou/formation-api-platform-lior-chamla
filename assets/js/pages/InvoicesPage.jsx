@@ -76,19 +76,19 @@ const InvoicesPage = () => {
 
   return (
     <>
-      <div className="mb-3 d-flex justify-content-between align-items-center">
+      <div className="d-flex justify-content-between align-items-center">
         <h1>Factures</h1>
         <Link className="btn btn-primary" to="/invoice/new">
           Créer une facture
         </Link>
-        <div className="form-group">
-          <input
-            className="form-control"
-            onChange={handleSearch}
-            placeholder="Rechecher"
-            value={search}
-          />
-        </div>
+      </div>
+      <div className="form-group">
+        <input
+          className="form-control"
+          onChange={handleSearch}
+          placeholder="Rechecher"
+          value={search}
+        />
       </div>
       <table className="table table-hover">
         <thead>

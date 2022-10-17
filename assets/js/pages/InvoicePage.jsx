@@ -9,7 +9,7 @@ import {
 } from '../services/CustomersAPI'
 import Select from '../components/Select'
 
-const CustomerPage = () => {
+const InvoicePage = () => {
   const { id } = useParams()
   const navigate = useNavigate()
 
@@ -22,7 +22,7 @@ const CustomerPage = () => {
       setCustomer({ lastName, firstName, email, company })
     } catch (e) {
       console.log(e.response)
-      navigate('/customers')
+      navigate('/invoices')
     }
   }
 
@@ -35,7 +35,7 @@ const CustomerPage = () => {
     }
   }, [id])
 
-  const [customer, setCustomer] = useState({
+  const [invoice, setInvoice] = useState({
     amount: '',
     customer: '',
     status: '',
@@ -49,7 +49,7 @@ const CustomerPage = () => {
 
   const handleChange = ({ currentTarget }) => {
     const { name, value } = currentTarget
-    setCustomer({ ...customer, [name]: value })
+    setInvoice({ ...invoice, [name]: value })
   }
 
   const handleSubmit = async (event) => {
@@ -78,8 +78,8 @@ const CustomerPage = () => {
 
   return (
     <>
-      {(!editing && <h1>Création d'un client</h1>) || (
-        <h1>Modification du client</h1>
+      {(!editing && <h1>Création d'une facture</h1>) || (
+        <h1>Modification de la facture</h1>
       )}
       <div className="form-group row">
         <form onSubmit={handleSubmit}>
@@ -97,7 +97,7 @@ const CustomerPage = () => {
             label="status"
             value={invoice.status}
             error={errors.status}
-            onChange={handleChange()}
+            onChange={handleChange}
           >
             <option value="SENT">Envoyée</option>
             <option value="PAID">Payée</option>
@@ -116,4 +116,4 @@ const CustomerPage = () => {
     </>
   )
 }
-export default CustomerPage
+export default InvoicePage

@@ -1,9 +1,8 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 
 const Select = ({ name, value, error, label, onChange, children }) => {
   return (
-    <div className="form-group">
+    <div className="form-group row">
       <label htmlFor={name}>{label}</label>
       <select
         name={name}
