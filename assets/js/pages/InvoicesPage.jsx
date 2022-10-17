@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Pagination from '../components/Pagination'
-import { findAll, deleteInvoice } from '../services/InvoicesAPI'
+import { findAll, remove as deleteInvoice } from '../services/InvoicesAPI'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 
@@ -116,6 +116,12 @@ const InvoicesPage = () => {
               </td>
               <td>{record.amount.toLocaleString()}</td>
               <td>
+                <Link
+                  to={`/invoice/${record.id}`}
+                  className="btn btn-sm btn-primary mr-1"
+                >
+                  Editer
+                </Link>
                 <button
                   onClick={() => handleDelete(record.id)}
                   className="btn btn-sm btn-danger"

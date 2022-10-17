@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Pagination from '../components/Pagination'
-import { findAll, deleteCustomer } from '../services/CustomersAPI'
+import * as CustomersAPI from '../services/CustomersAPI'
 import { Link } from 'react-router-dom'
 
 const CustomersPage = () => {
@@ -9,7 +9,7 @@ const CustomersPage = () => {
   const [search, setSearch] = useState('')
   const fetchCustomer = async () => {
     try {
-      const data = await findAll()
+      const data = await CustomersAPI.findAll()
       setCustomers(data)
     } catch (error) {
       console.log(error.response)

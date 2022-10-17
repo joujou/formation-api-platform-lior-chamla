@@ -2,11 +2,8 @@ import React, { useEffect, useState } from 'react'
 import Field from '../components/Forms/Field'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
-import {
-  createCustomer,
-  findCustomer,
-  updateCustomer,
-} from '../services/CustomersAPI'
+import * as InvoicesAPI from '../services/InvoicesAPI'
+import * as CustomersAPI from '../services/CustomersAPI'
 import Select from '../components/Select'
 
 const InvoicePage = () => {
@@ -15,11 +12,21 @@ const InvoicePage = () => {
 
   const [editing, setEditing] = useState(false)
 
-  const fetchCustomer = async (id) => {
-    try {
-      const { firstName, lastName, email, company } = await findCustomer(id)
+  const [customers, setCustomers] = useState([])
 
-      setCustomer({ lastName, firstName, email, company })
+  const fetchCustomers = async () => {
+    try {
+      const data = await CustomersAPI.findAll()
+      setCustomers(data)
+      if (!invoice.customer) setInvoice({ ...invoice, customer: data[0].id })
+    } catch (error) {}
+  }
+
+  const fetchInvoice = async (id) => {
+    try {
+      const { amount, status, customer } = await InvoicesAPI.find(id)
+
+      setInvoice({ amount, status, customer: customer.id })
     } catch (e) {
       console.log(e.response)
       navigate('/invoices')
@@ -27,9 +34,13 @@ const InvoicePage = () => {
   }
 
   useEffect(() => {
+    fetchCustomers()
+  }, [])
+
+  useEffect(() => {
     if (id !== 'new') {
+      fetchInvoice(id)
       setEditing(true)
-      fetchCustomer(id)
     } else {
       setEditing(false)
     }
@@ -38,7 +49,7 @@ const InvoicePage = () => {
   const [invoice, setInvoice] = useState({
     amount: '',
     customer: '',
-    status: '',
+    status: 'SENT',
   })
 
   const [errors, setErrors] = useState({
@@ -50,17 +61,24 @@ const InvoicePage = () => {
   const handleChange = ({ currentTarget }) => {
     const { name, value } = currentTarget
     setInvoice({ ...invoice, [name]: value })
+    console.log(invoice)
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-
     try {
       if (editing) {
-        await updateCustomer(id, customer)
+        const response = await InvoicesAPI.update(id, {
+          ...invoice,
+          customer: `/api/customers/${invoice.customer}`,
+        })
       } else {
-        const response = await createCustomer(customer)
-        navigate('/customers')
+        const response = await InvoicesAPI.create({
+          ...invoice,
+          customer: `/api/customers/${invoice.customer}`,
+        })
+        console.log(response)
+        navigate('/invoices')
       }
 
       //setErrors({})
@@ -93,6 +111,19 @@ const InvoicePage = () => {
             value={invoice.amount}
           />
           <Select
+            name="customer"
+            label="Client"
+            value={invoice.customer}
+            error={errors.customer}
+            onChange={handleChange}
+          >
+            {customers.map((customer) => (
+              <option key={customer.id} value={customer.id}>
+                {customer.firstName} {customer.lastName}
+              </option>
+            ))}
+          </Select>
+          <Select
             name="status"
             label="status"
             value={invoice.status}
@@ -103,15 +134,15 @@ const InvoicePage = () => {
             <option value="PAID">Payée</option>
             <option value="CANCELLED">Annulée</option>
           </Select>
+          <div className="form-group">
+            <button type="submit" className="btn btn-success">
+              Enregistrer
+            </button>
+            <Link to="/invoices" className="btn btn-link">
+              Retour à la liste
+            </Link>
+          </div>
         </form>
-      </div>
-      <div className="form-group">
-        <button type="submit" className="btn btn-success">
-          Enregistrer
-        </button>
-        <Link to="/invoices" className="btn btn-link">
-          Retour à la liste
-        </Link>
       </div>
     </>
   )

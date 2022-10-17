@@ -3,9 +3,9 @@ import Field from '../components/Forms/Field'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import {
-  createCustomer,
-  findCustomer,
-  updateCustomer,
+  create as createCustomer,
+  find as findCustomer,
+  update as updateCustomer,
 } from '../services/CustomersAPI'
 
 const CustomerPage = () => {
