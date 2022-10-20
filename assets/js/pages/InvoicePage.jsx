@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import * as InvoicesAPI from '../services/InvoicesAPI'
 import * as CustomersAPI from '../services/CustomersAPI'
 import Select from '../components/Select'
+import { toast } from 'react-toastify'
 
 const InvoicePage = () => {
   const { id } = useParams()
@@ -19,7 +20,9 @@ const InvoicePage = () => {
       const data = await CustomersAPI.findAll()
       setCustomers(data)
       if (!invoice.customer) setInvoice({ ...invoice, customer: data[0].id })
-    } catch (error) {}
+    } catch (error) {
+      toast.error('Erreur lors du chargement des clients')
+    }
   }
 
   const fetchInvoice = async (id) => {
@@ -28,7 +31,7 @@ const InvoicePage = () => {
 
       setInvoice({ amount, status, customer: customer.id })
     } catch (e) {
-      console.log(e.response)
+      toast.error('Erreur dans le chargement de la facture')
       navigate('/invoices')
     }
   }
@@ -72,12 +75,13 @@ const InvoicePage = () => {
           ...invoice,
           customer: `/api/customers/${invoice.customer}`,
         })
+        toast.success('Facture modifiée')
       } else {
         const response = await InvoicesAPI.create({
           ...invoice,
           customer: `/api/customers/${invoice.customer}`,
         })
-        console.log(response)
+        toast.success('Facture créée')
         navigate('/invoices')
       }
 
@@ -90,6 +94,7 @@ const InvoicePage = () => {
           apiErrors[propertyPath] = message
         })
         setErrors(apiErrors)
+        toast.success('Des erreurs sont survenues')
       }
     }
   }

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Field from '../components/Forms/Field'
 import { Link, useNavigate } from 'react-router-dom'
 import * as UsersAPI from '../services/UsersAPI'
+import { toast } from 'react-toastify'
 
 const RegisterPage = () => {
   const [user, setUser] = useState({
@@ -33,12 +34,14 @@ const RegisterPage = () => {
     const apiErrors = {}
     if (user.password !== user.passwordConfirm) {
       apiErrors.passwordConfirm = 'Confirmation de mot de passe non conforme'
+      toast.error('Erreurs dans le formulaire')
       setErrors(apiErrors)
       return
     }
 
     try {
       const response = await UsersAPI.register(user)
+      toast.success('Vous êtes inscrit')
       navigate('/login')
       setErrors({})
     } catch ({ response }) {
@@ -49,6 +52,7 @@ const RegisterPage = () => {
         })
         setErrors(apiErrors)
       }
+      toast.error('Erreurs dans le formulaire')
     }
   }
 

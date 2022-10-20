@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Pagination from '../components/Pagination'
 import * as CustomersAPI from '../services/CustomersAPI'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const CustomersPage = () => {
   const [customers, setCustomers] = useState([])
@@ -12,7 +13,7 @@ const CustomersPage = () => {
       const data = await CustomersAPI.findAll()
       setCustomers(data)
     } catch (error) {
-      console.log(error.response)
+      toast.error('Erreur lors du chargement des clients')
     }
   }
   useEffect(() => {
@@ -28,9 +29,11 @@ const CustomersPage = () => {
 
     // Pessimiste = supprimer uniquement quand reponse requete delete
     try {
-      await deleteCustomer(id)
+      await CustomersAPI.remove(id)
+      toast.success('Suppression OK')
     } catch (error) {
       setCustomers(originalCustomers)
+      toast.error('Erreur lors de la suppression')
     }
   }
 
@@ -99,6 +102,12 @@ const CustomersPage = () => {
               <td>{customer.invoices.length}</td>
               <td>{customer.totalAmount.toLocaleString()} €</td>
               <td>
+                <Link
+                  to={`/customer/${customer.id}`}
+                  className="btn btn-sm btn-primary mr-1"
+                >
+                  Editer
+                </Link>
                 <button
                   onClick={() => handleDelete(customer.id)}
                   disabled={customer.invoices.length > 0}

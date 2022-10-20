@@ -3,6 +3,7 @@ import Pagination from '../components/Pagination'
 import { findAll, remove as deleteInvoice } from '../services/InvoicesAPI'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const STATUS_CLASSES = {
   PAID: 'success',
@@ -25,7 +26,7 @@ const InvoicesPage = () => {
       const data = await findAll()
       setInvoices(data)
     } catch (error) {
-      console.log(error.response)
+      toast.error('Erreur lors du chargement des factures')
     }
   }
   useEffect(() => {
@@ -44,7 +45,9 @@ const InvoicesPage = () => {
     // Pessimiste = supprimer uniquement quand reponse requete delete
     try {
       await deleteInvoice(id)
+      toast.success('Facture supprimée')
     } catch (error) {
+      toast.error('Une erreur est survenue')
       setInvoices(originalInvoices)
     }
   }

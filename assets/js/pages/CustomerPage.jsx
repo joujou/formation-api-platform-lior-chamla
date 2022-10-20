@@ -7,6 +7,7 @@ import {
   find as findCustomer,
   update as updateCustomer,
 } from '../services/CustomersAPI'
+import { toast } from 'react-toastify'
 
 const CustomerPage = () => {
   const { id } = useParams()
@@ -20,7 +21,7 @@ const CustomerPage = () => {
 
       setCustomer({ lastName, firstName, email, company })
     } catch (e) {
-      console.log(e.response)
+      toast.error('Erreur lors du chargement du client')
       navigate('/customers')
     }
   }
@@ -57,12 +58,15 @@ const CustomerPage = () => {
     event.preventDefault()
 
     try {
+      setErrors({})
       if (editing) {
         await updateCustomer(id, customer)
+        toast.success('Update du client OK')
       } else {
         const response = await createCustomer(customer)
-        navigate('/customers')
+        toast.success('Client créé')
       }
+      navigate('/customers')
 
       //setErrors({})
     } catch ({ response }) {
@@ -73,6 +77,7 @@ const CustomerPage = () => {
           apiErrors[propertyPath] = message
         })
         setErrors(apiErrors)
+        toast.error('Erreurs')
       }
     }
   }

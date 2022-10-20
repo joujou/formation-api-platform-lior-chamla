@@ -3,6 +3,7 @@ import { authenticate } from '../services/AuthAPI'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext'
 import Field from '../components/Forms/Field'
+import { toast } from 'react-toastify'
 
 const LoginPage = () => {
   const { setIsAuthenticated } = useContext(AuthContext)
@@ -28,10 +29,12 @@ const LoginPage = () => {
       await authenticate(credentials)
       setIsAuthenticated(true)
       setError('')
+      toast.success('Vous êtes connecté')
       navigate('/customers')
     } catch (e) {
       console.log(e)
       setError('Echec connexion')
+      toast.error('Echec connexion')
     }
   }
 
