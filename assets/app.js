@@ -14,13 +14,13 @@ import HomePage from './js/pages/HomePage'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import CustomersPage from './js/pages/CustomersPage'
 import InvoicesPage from './js/pages/InvoicesPage'
-import CustomersPageWithPagination from './js/pages/CustomersPageWithPagination'
 import LoginPage from './js/pages/LoginPage'
 import { setup, getIsAuthenticated } from './js/services/AuthAPI'
 import RequireAuth from './js/services/RequireAuth'
 import { AuthContext } from './js/contexts/AuthContext'
 import CustomerPage from './js/pages/CustomerPage'
 import InvoicePage from './js/pages/InvoicePage'
+import RegisterPage from './js/pages/RegisterPage'
 
 setup()
 
@@ -72,6 +72,7 @@ const App = () => {
                   </RequireAuth>
                 }
               />
+              <Route path="/register" element={<RegisterPage />} />
               <Route path="/login" element={<LoginPage />} />
             </Routes>
           </main>
