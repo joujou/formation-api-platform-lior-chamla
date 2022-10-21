@@ -4,6 +4,7 @@ import { findAll, remove as deleteInvoice } from '../services/InvoicesAPI'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import TableLoader from '../components/Loaders/TableLoader'
 
 const STATUS_CLASSES = {
   PAID: 'success',
@@ -21,10 +22,12 @@ const InvoicesPage = () => {
   const [invoices, setInvoices] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(true)
   const fetchInvoice = async () => {
     try {
       const data = await findAll()
       setInvoices(data)
+      setLoading(false)
     } catch (error) {
       toast.error('Erreur lors du chargement des factures')
     }
@@ -104,38 +107,43 @@ const InvoicesPage = () => {
             <th>Montant total</th>
           </tr>
         </thead>
-        <tbody>
-          {paginatedInvoices.map((record) => (
-            <tr key={record.id}>
-              <td>{record.chrono}</td>
-              <td>
-                {record.customer.firstName} {record.customer.lastName}
-              </td>
-              <td>{formatDate(record.sentAt)}</td>
-              <td>
-                <span className={`badge bg-${STATUS_CLASSES[record.status]}`}>
-                  {STATUS_LABELS[record.status]}
-                </span>
-              </td>
-              <td>{record.amount.toLocaleString()}</td>
-              <td>
-                <Link
-                  to={`/invoice/${record.id}`}
-                  className="btn btn-sm btn-primary mr-1"
-                >
-                  Editer
-                </Link>
-                <button
-                  onClick={() => handleDelete(record.id)}
-                  className="btn btn-sm btn-danger"
-                >
-                  Supprimer
-                </button>{' '}
-              </td>
-            </tr>
-          ))}
-        </tbody>
+        {!loading && (
+          <tbody>
+            {paginatedInvoices.map((record) => (
+              <tr key={record.id}>
+                <td>{record.chrono}</td>
+                <td>
+                  <Link to={`/customer/${record.customer.id}`}>
+                    {record.customer.firstName} {record.customer.lastName}
+                  </Link>
+                </td>
+                <td>{formatDate(record.sentAt)}</td>
+                <td>
+                  <span className={`badge bg-${STATUS_CLASSES[record.status]}`}>
+                    {STATUS_LABELS[record.status]}
+                  </span>
+                </td>
+                <td>{record.amount.toLocaleString()}</td>
+                <td>
+                  <Link
+                    to={`/invoice/${record.id}`}
+                    className="btn btn-sm btn-primary mr-1"
+                  >
+                    Editer
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(record.id)}
+                    className="btn btn-sm btn-danger"
+                  >
+                    Supprimer
+                  </button>{' '}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
+      {loading && <TableLoader></TableLoader>}
       {itemsPerPage < filteredInvoices.length && (
         <Pagination
           currentPage={currentPage}

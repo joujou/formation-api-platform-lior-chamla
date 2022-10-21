@@ -8,18 +8,19 @@ import {
   update as updateCustomer,
 } from '../services/CustomersAPI'
 import { toast } from 'react-toastify'
+import FormContentLoader from '../components/Loaders/FormContentLoader'
 
 const CustomerPage = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-
+  const [loading, setLoading] = useState(false)
   const [editing, setEditing] = useState(false)
 
   const fetchCustomer = async (id) => {
     try {
       const { firstName, lastName, email, company } = await findCustomer(id)
-
       setCustomer({ lastName, firstName, email, company })
+      setLoading(false)
     } catch (e) {
       toast.error('Erreur lors du chargement du client')
       navigate('/customers')
@@ -28,6 +29,7 @@ const CustomerPage = () => {
 
   useEffect(() => {
     if (id !== 'new') {
+      setLoading(true)
       setEditing(true)
       fetchCustomer(id)
     } else {
@@ -87,7 +89,8 @@ const CustomerPage = () => {
       {(!editing && <h1>Création d'un client</h1>) || (
         <h1>Modification du client</h1>
       )}
-      <div className="form-group row">
+      {loading && <FormContentLoader></FormContentLoader>}
+      {!loading && (
         <form onSubmit={handleSubmit}>
           <Field
             name="lastName"
@@ -128,7 +131,7 @@ const CustomerPage = () => {
             </Link>
           </div>
         </form>
-      </div>
+      )}
     </>
   )
 }
