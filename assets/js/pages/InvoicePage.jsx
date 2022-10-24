@@ -96,7 +96,7 @@ const InvoicePage = () => {
           apiErrors[propertyPath] = message
         })
         setErrors(apiErrors)
-        toast.success('Des erreurs sont survenues')
+        toast.error('Des erreurs sont survenues')
       }
     }
   }
